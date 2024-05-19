@@ -9,6 +9,7 @@ export default function MessagesNode({ data: { text } }) {
       sx={{
         backgroundColor: "white",
         border: "1px solid rgba(50, 115, 220, 0.3)",
+        maxWidth: "20vw",
       }}
     >
       <Box

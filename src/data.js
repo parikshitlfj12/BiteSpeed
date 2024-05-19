@@ -7,7 +7,7 @@ export const initialNodes = [
   },
   {
     id: "2",
-    position: { x: 200, y: 200 },
+    position: { x: 1000, y: 200 },
     data: { text: "Reply to random text" },
     type: "messagesNode",
   },

@@ -97,6 +97,33 @@ function App() {
     event.dataTransfer.dropEffect = "move";
   };
 
+  // Function to check for nodes with empty target handles
+  const checkNodesWithEmptyTargetHandles = () => {
+    const targetNodeIds = edges.map((edge) => edge.target);
+    const nodesWithEmptyTargetHandles = nodes.filter(
+      (node) => !targetNodeIds.includes(node.id)
+    );
+    return nodesWithEmptyTargetHandles.length > 1;
+  };
+
+  // Function to handle save button click
+  const onClickSave = () => {
+    setSelectedNode(null);
+    if (checkNodesWithEmptyTargetHandles()) {
+      openSnackbar(
+        "More than one node has empty target handles. Please fix that!",
+        "error"
+      );
+      return false;
+    } else {
+      openSnackbar(
+        "Hurray! Changes saved successfully to the cloud.",
+        "success"
+      );
+      return true;
+    }
+  };
+
   return (
     <Box sx={{ display: "flex", alignItems: "flex-start", flexWrap: "wrap" }}>
       {/* Flow Section */}
@@ -131,11 +158,23 @@ function App() {
             pb: 2,
           }}
         >
-          <Button variant="contained">Save Changes</Button>
+          <Button
+            variant="outlined"
+            onClick={onClickSave}
+            sx={{
+              fontWeight: "bold",
+              borderWidth: "2px",
+              "&:hover": { borderWidth: "2px" },
+            }}
+          >
+            Save Changes
+          </Button>
         </Box>
         <Box sx={{ mt: 2 }}>
           {!!selectedNode ? (
             <SettingPanel
+              nodes={nodes}
+              setNodes={setNodes}
               node={selectedNode}
               onClose={() => {
                 setSelectedNode(null);
