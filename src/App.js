@@ -1,9 +1,7 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import ReactFlow, {
   Background,
-  ControlButton,
   Controls,
-  MiniMap,
   addEdge,
   useEdgesState,
   useNodesState,
@@ -16,7 +14,6 @@ import MessagesNode from "./components/nodes/messagesNode";
 import CustomEdge from "./components/edges/customEdge";
 import SettingPanel from "./components/panel/settingPanel";
 import NodesPanel from "./components/panel/nodesPanel";
-import { generateRandomCoordinates } from "./utils";
 
 // You can add custom Nodes in components file and add them to this list
 const nodeTypes = {
@@ -49,15 +46,39 @@ function App() {
     setSelectedNode(node);
   };
 
-  // Function to add an empty node
-  const addEmptyNode = () => {
+  // Function to add a new node at a specific position
+  const addNodeAtPosition = (position, type) => {
     const newNode = {
       id: `${nodes.length + 1}`,
       data: { label: "New Node" },
-      position: generateRandomCoordinates(),
-      type: "messagesNode",
+      position,
+      type,
     };
     setNodes((prevNodes) => [...prevNodes, newNode]);
+  };
+
+  // Handle drop event
+  const onDrop = (event) => {
+    event.preventDefault();
+
+    const reactFlowBounds = event.target.getBoundingClientRect();
+    const type = event.dataTransfer.getData("application/reactflow");
+    if (typeof type === "undefined" || !type) {
+      return;
+    }
+
+    const position = {
+      x: event.clientX - reactFlowBounds.left,
+      y: event.clientY - reactFlowBounds.top,
+    };
+
+    addNodeAtPosition(position, type);
+  };
+
+  // Allow drag over
+  const onDragOver = (event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
   };
 
   return (
@@ -65,6 +86,8 @@ function App() {
       {/* Flow Section */}
       <Box
         sx={{ width: "60%", height: "100vh", borderRight: "1px solid grey" }}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
       >
         <ReactFlow
           nodes={nodes}
@@ -84,11 +107,29 @@ function App() {
 
       {/* Panel's Section */}
       <Box sx={{ width: "40%", p: 2, height: "100%" }}>
-        {!!selectedNode ? <SettingPanel node={selectedNode} /> : <NodesPanel />}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            borderBottom: "1px solid grey",
+            pb: 2,
+          }}
+        >
+          <Button variant="contained">Save Changes</Button>
+        </Box>
+        <Box sx={{ mt: 2 }}>
+          {!!selectedNode ? (
+            <SettingPanel
+              node={selectedNode}
+              onClose={() => {
+                setSelectedNode(null);
+              }}
+            />
+          ) : (
+            <NodesPanel />
+          )}
+        </Box>
       </Box>
-      <Button variant="contained" color="primary" onClick={addEmptyNode}>
-        Add Empty Node
-      </Button>
     </Box>
   );
 }
