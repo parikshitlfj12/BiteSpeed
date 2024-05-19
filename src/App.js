@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -8,10 +8,9 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import "./App.css";
-import { Alert, Box, Button, Snackbar } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { initialEdges, initialNodes } from "./data";
 import MessagesNode from "./components/nodes/messagesNode";
-import CustomEdge from "./components/edges/customEdge";
 import SettingPanel from "./components/panel/settingPanel";
 import NodesPanel from "./components/panel/nodesPanel";
 import { useSnackbar } from "./contexts/snackbarContext";
@@ -19,11 +18,6 @@ import { useSnackbar } from "./contexts/snackbarContext";
 // You can add custom Nodes in components file and add them to this list
 const nodeTypes = {
   messagesNode: MessagesNode,
-};
-
-// Custom edge to introduce removing edge feature.
-const edgeTypes = {
-  customEdge: CustomEdge,
 };
 
 function App() {
@@ -44,12 +38,22 @@ function App() {
         ...connection,
         animated: true,
         id: `${edges.length + 1}`,
-        type: "customEdge",
       };
       setEdges((prevEdges) => addEdge(edge, prevEdges));
+      openSnackbar(
+        `Edge created successfully between nodes ${connection.source} - ${connection.target}`,
+        "success"
+      );
     } else {
-      console.log("Source handle already has an edge connected");
+      openSnackbar("Source handle already has an edge connected", "error");
     }
+  };
+
+  // Callback to handle edge deletion
+  const onEdgeClick = (event, edge) => {
+    event.stopPropagation(); // Prevent the default behavior of the event
+    setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+    openSnackbar(`Edge ${edge.id} deleted successfully`, "success");
   };
 
   // Callback to handle node selection
@@ -66,6 +70,7 @@ function App() {
       type,
     };
     setNodes((prevNodes) => [...prevNodes, newNode]);
+    setSelectedNode(newNode);
   };
 
   // Handle drop event
@@ -107,9 +112,9 @@ function App() {
           onEdgesChange={onEdgesChange}
           fitView
           nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
           onConnect={onConnect}
           onNodeClick={onNodeClick}
+          onEdgeClick={onEdgeClick}
         >
           <Background />
           <Controls />
