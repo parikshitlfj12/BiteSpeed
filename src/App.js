@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -8,12 +8,13 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import "./App.css";
-import { Box, Button } from "@mui/material";
+import { Alert, Box, Button, Snackbar } from "@mui/material";
 import { initialEdges, initialNodes } from "./data";
 import MessagesNode from "./components/nodes/messagesNode";
 import CustomEdge from "./components/edges/customEdge";
 import SettingPanel from "./components/panel/settingPanel";
 import NodesPanel from "./components/panel/nodesPanel";
+import { useSnackbar } from "./contexts/snackbarContext";
 
 // You can add custom Nodes in components file and add them to this list
 const nodeTypes = {
@@ -29,6 +30,7 @@ function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState(null);
+  const { openSnackbar } = useSnackbar();
 
   // Creating an edge between nodes
   const onConnect = (connection) => {
