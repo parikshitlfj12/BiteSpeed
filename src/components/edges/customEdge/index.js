@@ -3,12 +3,10 @@ import {
   BezierEdge,
   EdgeLabelRenderer,
   getBezierPath,
-  useReactFlow,
 } from "reactflow";
 
 export default function Edge(props) {
   const {
-    id,
     sourceX,
     sourceY,
     targetX,
@@ -17,9 +15,9 @@ export default function Edge(props) {
     targetPosition,
   } = props;
 
-  const { setEdges } = useReactFlow();
+  console.log(props)
 
-  const [edgePath, labelX, labelY] = getBezierPath({
+  const [labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
     targetX,

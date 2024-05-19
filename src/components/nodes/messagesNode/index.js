@@ -28,6 +28,7 @@ export default function MessagesNode({ data: { text } }) {
       </Box>
       <Box sx={{ px: 5, py: 1 }}>{text}</Box>
       <Handle type="source" position={Position.Right} />
+      <Handle type="target" position={Position.Left} />
     </Box>
   );
 }

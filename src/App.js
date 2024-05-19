@@ -32,13 +32,22 @@ function App() {
 
   // Creating an edge between nodes
   const onConnect = (connection) => {
-    const edge = {
-      ...connection,
-      animated: true,
-      id: `${edges.length + 1}`,
-      type: "customEdge",
-    };
-    setEdges((prevEdges) => addEdge(edge, prevEdges));
+    // Check if the source handle already has an edge connected
+    const existingEdge = edges.some(
+      (edge) => edge.source === connection.source
+    );
+
+    if (!existingEdge) {
+      const edge = {
+        ...connection,
+        animated: true,
+        id: `${edges.length + 1}`,
+        type: "customEdge",
+      };
+      setEdges((prevEdges) => addEdge(edge, prevEdges));
+    } else {
+      console.log("Source handle already has an edge connected");
+    }
   };
 
   // Callback to handle node selection
