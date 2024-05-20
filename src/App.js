@@ -8,7 +8,7 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import "./App.css";
-import { Box, Button } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress } from "@mui/material";
 import { initialEdges, initialNodes } from "./data";
 import MessagesNode from "./components/nodes/messagesNode";
 import SettingPanel from "./components/panel/settingPanel";
@@ -24,6 +24,7 @@ function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState(null);
+  const [openLoader, setOpenLoader] = useState(false);
   const { openSnackbar } = useSnackbar();
 
   // Creating an edge between nodes
@@ -108,20 +109,24 @@ function App() {
 
   // Function to handle save button click
   const onClickSave = () => {
-    setSelectedNode(null);
-    if (checkNodesWithEmptyTargetHandles()) {
-      openSnackbar(
-        "More than one node has empty target handles. Please fix that!",
-        "error"
-      );
-      return false;
-    } else {
-      openSnackbar(
-        "Hurray! Changes saved successfully to the cloud.",
-        "success"
-      );
-      return true;
-    }
+    setOpenLoader(true);
+    setTimeout(() => {
+      setOpenLoader(false);
+      setSelectedNode(null);
+      if (checkNodesWithEmptyTargetHandles()) {
+        openSnackbar(
+          "More than one node has empty target handles. Please fix that!",
+          "error"
+        );
+        return false;
+      } else {
+        openSnackbar(
+          "Hurray! Changes saved successfully to the cloud.",
+          "success"
+        );
+        return true;
+      }
+    }, [1000]);
   };
 
   return (
@@ -185,6 +190,13 @@ function App() {
           )}
         </Box>
       </Box>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={openLoader}
+        onClick={() => setOpenLoader(false)}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Box>
   );
 }
