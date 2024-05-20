@@ -5,23 +5,23 @@ import React, { useEffect, useState } from "react";
 const MessageNode = ({ node, onClose, setNodes, nodes }) => {
   const [message, setMessage] = useState("");
 
-  // To update data for selected Node
   useEffect(() => {
-    setMessage(node?.data?.text);
+    setMessage(node?.data?.text || "");
   }, [node]);
 
-  const updateNodes = (message) => {
-    const newNode = { ...node, data: { ...node?.data, text: message } };
-    const filteredNodes = nodes.filter((nod) => {
-      return nod.id !== node.id;
-    });
-    setNodes([...filteredNodes, newNode]);
+  const updateNodes = (updatedMessage) => {
+    const updatedNode = {
+      ...node,
+      data: { ...node.data, text: updatedMessage },
+    };
+    const updatedNodes = nodes.map((n) => (n.id === node.id ? updatedNode : n));
+    setNodes(updatedNodes);
   };
 
-  // Creating a new node with updated data and pushing to the flow
   const handleChange = (e) => {
-    setMessage(e.target.value);
-    updateNodes(e.target.value);
+    const newMessage = e.target.value;
+    setMessage(newMessage);
+    updateNodes(newMessage);
   };
 
   return (
@@ -38,22 +38,20 @@ const MessageNode = ({ node, onClose, setNodes, nodes }) => {
         </Typography>
         <Close sx={{ cursor: "pointer" }} onClick={onClose} />
       </Box>
-      <p>ID: {node.id}</p>
+      <Typography>ID: {node.id}</Typography>
       <Input
         placeholder="Enter your message!"
         fullWidth
-        value={!!message ? message : ""}
+        value={message}
         onChange={handleChange}
       />
     </Box>
   );
 };
 
-export default function SettingPanel({ node, onClose, nodes, setNodes }) {
-  if (!node) return null; // Ensure the component returns null if no node is selected
-
-  switch (node.type) {
-    case "messagesNode": {
+const NodeRenderer = ({ node, onClose, nodes, setNodes }) => {
+  switch (node?.type) {
+    case "messagesNode":
       return (
         <MessageNode
           node={node}
@@ -62,8 +60,6 @@ export default function SettingPanel({ node, onClose, nodes, setNodes }) {
           setNodes={setNodes}
         />
       );
-    }
-    // Add more cases for different node types if needed
     default:
       return (
         <Typography variant="h6" fontWeight="bold">
@@ -71,4 +67,19 @@ export default function SettingPanel({ node, onClose, nodes, setNodes }) {
         </Typography>
       );
   }
-}
+};
+
+const SettingPanel = ({ node, onClose, nodes, setNodes }) => {
+  if (!node) return null;
+
+  return (
+    <NodeRenderer
+      node={node}
+      onClose={onClose}
+      nodes={nodes}
+      setNodes={setNodes}
+    />
+  );
+};
+
+export default SettingPanel;

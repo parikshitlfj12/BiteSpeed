@@ -19,11 +19,11 @@ export default function MessagesNode({ data: { text } }) {
           backgroundColor: "#8AFFFF",
           display: "flex",
           alignItems: "center",
-          columnGap: "4px",
+          gap: "4px",
         }}
       >
         <Message fontSize="small" />
-        <Typography variant="h6" fontWeight={"bold"}>
+        <Typography variant="h6" fontWeight="bold">
           Send Message
         </Typography>
       </Box>
