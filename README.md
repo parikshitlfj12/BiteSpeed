@@ -8,12 +8,14 @@ The project is also available on [vercel](https://bite-speed-lac.vercel.app/).
 This is a simple chat flow builder project. The project has the following key features: 
 -   The left-hand side is the flow UI.
 -   Right-hand side is the configurable side.
--   There's only one node configuration i.e. for Message Nodes.
+-   There's only one node configuration i.e. for Message Nodes but the system is scalable and we can add more nodes.
 -   You can drag and drop the nodes from right side onto the flow panel.
 -   Clicking on a node would give you the option to edit the text.
 -   You can also drag nodes within the flow panel.
 -   Create connection between two nodes by creating an edge.
+-   To delete an edge, simply click on the edge you wanna delete.
 -   Once after finishing your setup, click on the `save changes` button to save changes to cloud(prototype).
+-   A loader is also introduced considering the user experience.
 -   Saving has to follow two condition,
     - The flow can only have one edge originating from a source handle.
     - More than one Node has empty target handles .
